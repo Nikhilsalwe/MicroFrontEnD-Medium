@@ -5,7 +5,7 @@ import App from './App';
 
 //Mount function to startup app
 
-const mount = (el, {onNavigate, defaultHistory, initialPath}) => {
+const mount = (el, {onSignIn, onNavigate, defaultHistory, initialPath}) => {
     const history = defaultHistory || createMemoryHistory({
         initialEntries: [initialPath]
     });
@@ -14,7 +14,7 @@ const mount = (el, {onNavigate, defaultHistory, initialPath}) => {
         history.listen(onNavigate)
     }
     ReactDOM.render(
-        <App history={history}/>,
+        <App onSignIn={onSignIn} history={history}/>,
         el
     )
 
@@ -37,7 +37,7 @@ const mount = (el, {onNavigate, defaultHistory, initialPath}) => {
 
 //If we are in development or isolocation call mount immediatly
 if(process.env.NODE_ENV == 'development') {
-    const devRoot = document.querySelector('#_marketing-dev-root')
+    const devRoot = document.querySelector('#_auth-dev-root')
 
     /**
      * To run in isolation is browser history
