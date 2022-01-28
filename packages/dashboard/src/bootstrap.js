@@ -1,51 +1,22 @@
-import React from 'react';
-import ReactDOM  from 'react-dom';
-import {createMemoryHistory,  createBrowserHistory} from 'history';
-import App from './App';
+import { createApp } from 'vue';
+import Dashboard from './components/Dashboard.vue';
 
-//Mount function to startup app
+// Mount function to start up the app
+const mount = (el) => {
+  const app = createApp(Dashboard);
+  app.mount(el);
+};
 
-const mount = (el, {onSignIn, onNavigate, defaultHistory, initialPath}) => {
-    const history = defaultHistory || createMemoryHistory({
-        initialEntries: [initialPath]
-    });
+// If we are in development and in isolation,
+// call mount immediately
+if (process.env.NODE_ENV === 'development') {
+  const devRoot = document.querySelector('#_dashboard-dev-root');
 
-    if(onNavigate) {
-        history.listen(onNavigate)
-    }
-    ReactDOM.render(
-        <App onSignIn={onSignIn} history={history}/>,
-        el
-    )
-
-    /**
-     * This is help to keep track from child to container app
-     */
-    return {
-        onParentNavigate({pathname: nextPathname}) {
-
-            const {pathname} = history.location; // this is current path in browser
-
-            if (pathname !== nextPathname) {
-                history.push(nextPathname)
-            }
-        }
-    }
+  if (devRoot) {
+    mount(devRoot);
+  }
 }
 
-
-
-//If we are in development or isolocation call mount immediatly
-if(process.env.NODE_ENV == 'development') {
-    const devRoot = document.querySelector('#_auth-dev-root')
-
-    /**
-     * To run in isolation is browser history
-     */
-    if(devRoot) {
-        mount(devRoot, {defaultHistory: createBrowserHistory()})
-    }
-}
-
-//If we running through container export mount
-export {mount}
+// We are running through container
+// and we should export the mount function
+export { mount };
